@@ -1,0 +1,37 @@
+// Schema do Prisma — define o modelo de dados e o conector do Postgres.
+// Vercel Postgres injeta DATABASE_URL automaticamente em produção.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+enum Priority {
+  alta
+  media
+  baixa
+}
+
+enum Category {
+  trabalho
+  estudos
+  pessoal
+  saude
+  outros
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  title     String
+  category  Category
+  priority  Priority
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([done, priority, createdAt])
+}
